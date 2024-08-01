@@ -1,7 +1,7 @@
-package com.group.libraryapp.calculator
+package com.group.libraryapp.calculator1
 
 class Calculator(
-        private var _number: Int
+    var _number: Int
 ) {
     val number: Int
         get() = this._number
