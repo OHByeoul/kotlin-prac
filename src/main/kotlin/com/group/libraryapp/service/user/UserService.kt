@@ -5,6 +5,8 @@ import com.group.libraryapp.domain.user.UserRepository
 import com.group.libraryapp.dto.user.request.UserCreateRequest
 import com.group.libraryapp.dto.user.request.UserUpdateRequest
 import com.group.libraryapp.dto.user.response.UserResponse
+import com.group.libraryapp.util.fail
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
@@ -22,20 +24,20 @@ class UserService(
     @Transactional(readOnly = true)
     fun getUsers(): List<UserResponse> {
         return userRepository.findAll()
-            .map { user -> UserResponse(user) }
+            .map { user -> UserResponse.of(user) }
 //            .map { UserResponse(it) }
 //            .map(::UserResponse)
     }
 
     @Transactional
     fun updateUserName(request: UserUpdateRequest) {
-        val user = userRepository.findById(request.id).orElseThrow(::IllegalArgumentException)
+        val user = userRepository.findByIdOrNull(request.id) ?: fail()
         user.updateName(request.name)
     }
 
     @Transactional
     fun deleteUser(name: String) {
-        val user = userRepository.findByName(name).orElseThrow(::IllegalArgumentException)
+        val user = userRepository.findByName(name) ?: fail()
         userRepository.delete(user)
 
     }
