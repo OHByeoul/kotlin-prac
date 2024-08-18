@@ -49,18 +49,24 @@ class BookService(
 
     @Transactional(readOnly = true)
     fun getBookStatistics(): List<BookStatResponse> {
-        val results = mutableListOf<BookStatResponse>()
-        val books = bookRepository.findAll()
-        for (book in books) {
-            results.firstOrNull{dto -> book.type == dto.type }?.plusOne()
-                ?: results.add(BookStatResponse(book.type,1))
+        return bookRepository.findAll() //List<Book>
+            .groupBy { each -> each.type } // Map<BookType, List<Book>>
+            .map { (type, bookList) -> BookStatResponse(type, bookList.size) }
+//        val results = mutableListOf<BookStatResponse>()
+
+//        for (book in books) {
+
+// 2번째 코드
+//            results.firstOrNull{dto -> book.type == dto.type }?.plusOne()
+//                ?: results.add(BookStatResponse(book.type,1))
+// 1번째 코드
 //            val targetDto = results.firstOrNull{dto -> book.type == dto.type}
 //            if (targetDto == null) {
 //                results.add(BookStatResponse(book.type, 1))
 //            } else {
 //                targetDto.plusOne()
 //            }
-        }
-        return results
+//        }
+//        return results
     }
 }
